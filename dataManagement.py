@@ -3,7 +3,7 @@ import time
 import requests
 import json
 
-apiKey = '8FC93B2942ADBE03C97ADAC3C126C615'
+apiKey = #TODO: Add api key
 
 def getLatestMatchId():
 	url = 'http://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/v1'	
