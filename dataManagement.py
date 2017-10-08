@@ -3,7 +3,7 @@ import time
 import requests
 import json
 
-apiKey = #TODO: Add api key
+apiKey = open('/home/hannu/steamApiKey.txt', 'r').read().strip()
 
 def getLatestMatchId():
 	url = 'http://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/v1'	
@@ -14,11 +14,15 @@ def getLatestMatchId():
 	}
 
 	print("Getting the latest match id.")
+
 	response = requests.get(url, params=parameters)
 
 	print(response)
-	
-	data = json.loads(response.text)
+	try:
+		data = json.loads(response.text)
+	except json.decoder.JSONDecodeError as e:
+		print("Error", e)
+		return
 
 	return data['result']['matches'][0]['match_id']
 	
