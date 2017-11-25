@@ -4,13 +4,27 @@ import sqlite3
 # TODO: create configuration file
 database = '../DotaPredictorDatabase/DotaPredictor'
 
-def AddGame(game):
+def addGame(game):
 	
 	print('Adding game', game)
 	conn = sqlite3.connect(database)
 	c = conn.cursor()
 
-	c.execute("SELECT name FROM sqlite_master WHERE type='table';")
-	print(c.fetchall())
+	c.execute("INSERT INTO Games VALUES (?)", game.radiant_victory)
+
+	'''
+	c.execute("INSERT INTO PicksBans VALUES(?,?,?,?,?)",
+		game.picksBans.team,
+		game.picksBans.isPick,
+		game.picksBans.order,
+		cursor.lastrowid,
+
+		)
+	'''
+
+	print("added game to database")
 
 	conn.close()
+
+
+

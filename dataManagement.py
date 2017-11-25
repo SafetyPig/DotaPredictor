@@ -24,7 +24,10 @@ def getLatestMatchId():
 		print("Error", e)
 		return
 
-	return data['result']['matches'][0]['match_id']
+	latestMatchId = data['result']['matches'][0]['match_id']
+	print("Latest match ID: " + repr(latestMatchId))
+	print(data)
+	return latestMatchId
 	
 def getLatestCaptainDraftMatches(amount, matchId, captainsDraftMatches):
 	url = 'http://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/v1'	
@@ -62,12 +65,18 @@ def getLatestCaptainDraftMatches(amount, matchId, captainsDraftMatches):
 		  "match_id": match['match_id']
 		}
 
-		print('Getting match with ID', match['match_id'])
 		response = requests.get(url, params=parameters)
-		print(response)
 
 		matchDetails = json.loads(response.text)
 		
+		
+		if('picks_bans' in matchDetails['result']):
+			print("==")
+			print(matchDetails['result']['picks_bans'])
+			print(matchDetails['result']['game_mode'])
+			print(matchDetails['result']['lobby_type'])		
+			print("==")
+
 		if matchDetails['result']['game_mode'] == 2:			
 			print('Found one')			
 			captainsDraftMatches.append(matchDetails['result'])	
@@ -81,7 +90,7 @@ def getCaptainDraftMatches():
 	captainDraftMatches = []
 	matchId = getLatestMatchId()
 	
-	fetchTimes = 4
+	fetchTimes = 10
 	for x in range(0, fetchTimes):
 		matchId = getLatestCaptainDraftMatches(100, matchId, captainDraftMatches)
 		if(x < fetchTimes):
@@ -90,3 +99,24 @@ def getCaptainDraftMatches():
 
 	return captainDraftMatches
 
+def getHeroes():
+	url = 'http://api.steampowered.com/IEconDOTA2_570/GetHeroes/v1'	
+	parameters = { 
+	  "key": apiKey,
+	  "format": 'json',
+	  "language": 'english'
+	}
+
+	print("Getting all the heros")
+
+	response = requests.get(url, params=parameters)
+
+	print(response)
+	try:
+		data = json.loads(response.text)
+	except json.decoder.JSONDecodeError as e:
+		print("Error", e)
+		return
+
+	listOfHeroes = data['result']['heroes']
+	return listOfHeroes
