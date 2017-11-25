@@ -36,4 +36,4 @@ def getCount():
 
 	conn.close()
 
-	return int(re.sub("[^0-9]", "", rowCount))
+	return int(re.sub("[^0-9]", "", rowCount))	

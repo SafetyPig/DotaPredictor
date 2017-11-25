@@ -2,29 +2,44 @@ import sqlite3
 
 # Sub-optimal to have the database path coded here.
 # TODO: create configuration file
-database = '../DotaPredictorDatabase/DotaPredictor'
+database = '../DotaPredictorDatabase/DotaPredictor.db'
 
-def addGame(game):
+def add(game):
 	
-	print('Adding game', game)
+	print('Adding game')
 	conn = sqlite3.connect(database)
 	c = conn.cursor()
 
-	c.execute("INSERT INTO Games VALUES (?)", game.radiant_victory)
+	c.execute('''
+		SELECT * FROM Games
+		WHERE Id = (?)''', [game.id])
 
-	'''
-	c.execute("INSERT INTO PicksBans VALUES(?,?,?,?,?)",
-		game.picksBans.team,
-		game.picksBans.isPick,
-		game.picksBans.order,
-		cursor.lastrowid,
+	if(c.fetchone()):
+		print('Game already in database')
+		return
 
-		)
-	'''
+	c.execute("INSERT INTO Games VALUES (?,?,?)", [game.id, game.radiantVictory, game.gameMode])
+	gameId = c.lastrowid
 
-	print("added game to database")
+	for pickBan in game.picksBans:
+		c.execute("INSERT INTO PicksBans VALUES(?,?,?,?,?)",
+			[pickBan.team, pickBan.isPick, pickBan.pickOrder, gameId, pickBan.heroId]
+			)
+
+	conn.commit()
+
+	print("Added game to database")
 
 	conn.close()
 
+def getAll():
+	conn = sqlite3.connect(database)
+	c = conn.cursor()
 
+	c.execute("SELECT * FROM Games")
 
+	rows = c.fetchall()
+
+	conn.close()
+
+	return rows

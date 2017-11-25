@@ -29,11 +29,11 @@ def getLatestMatchId():
 	print(data)
 	return latestMatchId
 	
-def getLatestCaptainDraftMatches(amount, matchId, captainsDraftMatches):
+def getLatestcaptainsModeMatches(amount, matchId, captainsModeMatches, rankedAllPickMatches):
 	url = 'http://api.steampowered.com/IDOTA2Match_570/GetMatchHistory/v1'	
 	parameters = {	  
 	  "key": apiKey,
-	  "game_mode": '2',
+	  #"game_mode": '2', TODO: For some reason this filter does not work.
 	  "skill": '3',
 	  "min_players": '10',
 	  "matches_requested" : amount,
@@ -41,7 +41,7 @@ def getLatestCaptainDraftMatches(amount, matchId, captainsDraftMatches):
 	  "start_at_match_id": matchId
 	}
 
-	print('Getting 100 matches.')
+	print('Getting ' + str(amount) +  ' matches.')
 	try:
 		response = requests.get(url, params=parameters)
 	except requests.exceptions.ConnectionError as e:
@@ -68,8 +68,7 @@ def getLatestCaptainDraftMatches(amount, matchId, captainsDraftMatches):
 		response = requests.get(url, params=parameters)
 
 		matchDetails = json.loads(response.text)
-		
-		
+			
 		if('picks_bans' in matchDetails['result']):
 			print("==")
 			print(matchDetails['result']['picks_bans'])
@@ -78,26 +77,34 @@ def getLatestCaptainDraftMatches(amount, matchId, captainsDraftMatches):
 			print("==")
 
 		if matchDetails['result']['game_mode'] == 2:			
-			print('Found one')			
-			captainsDraftMatches.append(matchDetails['result'])	
+			print('Found one the captains mode match. PARTY!')			
+			captainsModeMatches.append(matchDetails['result'])	
+
+
+		if matchDetails['result']['game_mode'] == 22:			
+			print('Found an all pick match.')			
+			rankedAllPickMatches.append(matchDetails['result'])
 
 		lastMatchId = matchDetails['result']['match_id']
 
 
-	return captainsDraftMatches, lastMatchId
+	return lastMatchId
 
-def getCaptainDraftMatches():
-	captainDraftMatches = []
-	matchId = getLatestMatchId()
+def getCaptainsModeMatches():
+	captainsModeMatches = []
+	rankedAllPickMatches = []
+	matchId = 3581327768
 	
-	fetchTimes = 10
+	fetchTimes = 100
 	for x in range(0, fetchTimes):
-		matchId = getLatestCaptainDraftMatches(100, matchId, captainDraftMatches)
+		matchId = getLatestcaptainsModeMatches(100, matchId, captainsModeMatches, rankedAllPickMatches)
 		if(x < fetchTimes):
 			print("Sleep ten seconds.")
-			time.sleep(10)	
+			print("Latest match ID", matchId)
+			print(x)
+			time.sleep(10)
 
-	return captainDraftMatches
+	return captainsModeMatches, rankedAllPickMatches
 
 def getHeroes():
 	url = 'http://api.steampowered.com/IEconDOTA2_570/GetHeroes/v1'	

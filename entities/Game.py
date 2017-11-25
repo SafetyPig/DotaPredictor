@@ -1,5 +1,9 @@
 class Game:
-	def __init__(self, id, picksBans, radiant_victory):
+	def __init__(self, id, picksBans, radiantVictory, gameMode):
 		self.id = id
 		self.picksBans = picksBans
-		self.radiant_victory = radiant_victory
+		self.radiantVictory = radiantVictory
+		self.gameMode = gameMode
+
+	def __str__(self):
+		return "ID: " + str(self.id) + " picksBans: " + str(self.picksBans) + " radiantVictory: " + str(self.radiantVictory) + " gameMode: " + self.gameMode 

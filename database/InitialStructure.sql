@@ -1,6 +1,7 @@
 CREATE TABLE Games(
 	Id INTEGER PRIMARY KEY NOT NULL,
-	RadiantVictory INTEGER NOT NULL
+	RadiantVictory INTEGER NOT NULL,
+	GameMode TEXT
 );
 
 CREATE TABLE Heroes(
