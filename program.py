@@ -70,7 +70,7 @@ def main():
 			testVictories.append(victories[i])
 			testHeroes.append(heroes[i])
 		else:
-			testVictories.append(victories[i])
+			learningVictories.append(victories[i])
 			learningHeroes.append(heroes[i])
 
 	dotaPredictor.learnToPredictWinner(learningHeroes, learningVictories, testHeroes, testVictories)

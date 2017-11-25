@@ -54,26 +54,26 @@ def learnToPredictWinner(learningHeroes, learningVictories, testHeroes, testVict
 	# construct model
 	pred = multilayer_perceptron(x, weights, biases)
 
-	# Loss and optimizer
-	loss = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits = pred, labels = y))
-	optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(loss)
+	# cost and optimizer
+	cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits = pred, labels = y))
+	optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
 
 	init = tf.global_variables_initializer()
 
+	print(testVictories)
 	with tf.Session() as sess:
 		sess.run(init)
-		for epoch in range(training_epochs):
+		for epoch in range(training_epochs):			
 			avg_cost = 0.
 			total_batches = int(len(learningHeroes)/batch_size)
 			game_batches = np.array_split(learningHeroes, total_batches)			
 			victory_batches = np.array_split(learningVictories, total_batches)			
 			for i in range(total_batches):				
-				game_batch, batch_victories = game_batches[i], victory_batches[i]
-				print(game_batch)
-				_, c = sess.run([optimizer, loss], feed_dict={x: game_batch, y: batch_victories})
+				game_batch, batch_victories = game_batches[i], victory_batches[i]				
+				_, c = sess.run([optimizer, cost], feed_dict={x: game_batch, y: batch_victories})
 				avg_cost += c /total_batches
 			if epoch % display_step == 0:
-				print("Epoch:", '%04' % (epoch+1), "loss=", "{:.9f}".format(avg_cost))
+				print("Learning in progress")
 		print("learning done finished")
 
 		# Test model
